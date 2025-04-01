@@ -1,0 +1,19 @@
+name: Trigger TestRunner Workflow
+
+on:
+  push:
+    branches:
+      - main
+    paths:
+      - "src/agents/**"
+
+jobs:
+  trigger:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Send repository_dispatch to TestRunner
+        run: |
+          curl -X POST https://api.github.com/repos/<your-username>/TestRunner/dispatches \
+            -H "Authorization: Bearer ${{ secrets.TEST_RUNNER_PAT }}" \
+            -H "Accept: application/vnd.github+json" \
+            -d '{"event_type": "run-from-devtest", "client_payload": {"branch": "main", "sha": "${{ github.sha }}"}}'
